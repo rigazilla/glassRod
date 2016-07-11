@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HotRodUtils.cs" />
+    <Compile Include="OpPing.cs" />
     <Compile Include="RequestHeader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResponseHeader.cs" />

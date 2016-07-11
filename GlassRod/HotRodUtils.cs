@@ -11,15 +11,14 @@ namespace GlassRod
         public static List<byte> vIntegerToBytes(ulong value)
         {
             List<byte> ret = new List<byte>();
-            while (value > 0)
+            do
             {
                 byte b = (byte)(value % 0x7f);
                 value >>= 7;
                 if (value > 0)
                     b |= 0x80;
                 ret.Add(b);
-
-            }
+            } while (value > 0);
             return ret;
         }
 
@@ -36,7 +35,7 @@ namespace GlassRod
             do
             {
                 ret += (ulong)(bytes[(int)pos] & 0x7f);
-            } while ((bytes[(int)pos++] | 0x80) != 0);
+            } while ((bytes[(int)pos++] & 0x80) != 0);
             return ret;
         }
 

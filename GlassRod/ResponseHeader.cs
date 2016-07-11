@@ -60,7 +60,7 @@ namespace GlassRod
         private ResponseHeader()
         {
         }
-        static ResponseHeader fromBytes(List<Byte> bytes)
+        public static ResponseHeader fromBytes(List<Byte> bytes)
         {
             ResponseHeader resp = new ResponseHeader();
             ulong pos = 0;
@@ -68,7 +68,7 @@ namespace GlassRod
             {
                 throw new Exception("Bad magic number received: " + bytes[0]);
             }
-            resp.magic = bytes[0];
+            resp.magic = bytes[(int)pos++];
 
             resp.messageId = HotRodUtils.bytesToVLong(bytes, ref pos);
             resp.opcode = bytes[(int)pos++];
