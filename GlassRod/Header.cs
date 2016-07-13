@@ -85,10 +85,9 @@ namespace GlassRod
         {
         }
 
-        public static HashAwareTopologyInfo fromBytes(List<Byte> bytes)
+        public static HashAwareTopologyInfo fromBytes(List<Byte> bytes, ref ulong pos)
         {
             HashAwareTopologyInfo resp = new HashAwareTopologyInfo();
-            ulong pos = 0;
             ulong numNodes;
             resp.topologyId = HotRodUtils.bytesToVLong(bytes, ref pos);
             numNodes = HotRodUtils.bytesToVLong(bytes, ref pos);
@@ -139,8 +138,7 @@ namespace GlassRod
 
             if (resp.topologyChangeMarker != 0)
             {
-                List<Byte> topologyList = bytes.GetRange((int)pos, bytes.Count);
-                HashAwareTopologyInfo.fromBytes(topologyList);
+                HashAwareTopologyInfo.fromBytes(bytes, ref pos);
             }
             return resp;
         }

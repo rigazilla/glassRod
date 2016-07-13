@@ -41,8 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HotRodUtils.cs" />
+    <Compile Include="OpGet.cs" />
     <Compile Include="OpPing.cs" />
     <Compile Include="Header.cs" />
+    <Compile Include="OpPut.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

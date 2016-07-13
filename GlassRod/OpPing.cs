@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace GlassRod
 {
+    /// <summary>
+    /// Representation of a HotRod Ping operation request
+    /// </summary>
     public class OpPingRequest
     {
-        /// <summary>
-        /// Representation of a HotRod Ping operation request
-        /// </summary>
         public HeaderRequest header;
         public OpPingRequest(HeaderRequest header)
         {
