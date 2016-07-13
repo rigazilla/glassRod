@@ -6,18 +6,37 @@ using System.Threading.Tasks;
 
 namespace GlassRod
 {
-    public class OpPing
+    public class OpPingRequest
     {
-
-        public RequestHeader header;
-        public OpPing(RequestHeader header)
+        /// <summary>
+        /// Representation of a HotRod Ping operation request
+        /// </summary>
+        public HeaderRequest header;
+        public OpPingRequest(HeaderRequest header)
         {
-            header.opcode = 0x17;
-            this.header = header;
+            this.header = header.Clone();
+            this.header.opcode = 0x17;
         }
         public List<Byte> toBytes()
         {
             return header.toBytes();
+        }
+    }
+    /// <summary>
+    /// Representation of a HotRod Ping operation response
+    /// </summary>
+    public class OpPingResponse
+    {
+        public HeaderResponse header;
+        public Byte responseStatus;
+
+        public static OpPingResponse fromBytes(List<byte> list)
+        {
+            OpPingResponse newResp = new OpPingResponse();
+            ulong pos = 0;
+            newResp.header = HeaderResponse.fromBytes(list, ref pos);
+            newResp.responseStatus = list[(int)pos++];
+            return newResp;
         }
     }
 }
