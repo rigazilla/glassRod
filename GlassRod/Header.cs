@@ -66,12 +66,27 @@ namespace GlassRod
             this.hashCode = hashCode;
         }
     }
+
     /// <summary>
-    /// Representation of the cluster topology information. This information usually comes from the server
+    /// Representation of a server node address
+    /// </summary>
+    public class NodeAddress
+    {
+        public string address;
+        public ushort port;
+        public NodeAddress(string address, ushort port)
+        {
+            this.address = address;
+            this.port = port;
+        }
+    }
+
+    /// <summary>
+    /// Representation of the hash aware cluster topology information. This information usually comes from the server
     /// </summary>
     /// <remarks>Use this class as follows:
     /// take the topology information bytes that come from the server and pass them to the fromBytes() method
-    /// and you'll get a new instance of this class
+    /// and you'll get a new instance of this class. Segment based topology info obsoletes this class
     /// </remarks>
     public class HashAwareTopologyInfo
     {
@@ -106,6 +121,58 @@ namespace GlassRod
     }
 
     /// <summary>
+    /// Representation of the segment based cluster topology information. This information usually comes from the server
+    /// </summary>
+    /// <remarks>Use this class as follows:
+    /// take the topology information bytes that come from the server and pass them to the fromBytes() method
+    /// and you'll get a new instance of this class. Segment based topology info obsoletes this class
+    /// </remarks>
+    public class SegmentBasedTopologyInfo
+    {
+        public ulong topologyId;
+        public ushort numKeyOwner;
+        public byte hashFuncVersion;
+        public ulong numSegments;
+        public ulong hashSpaceSize;
+        public NodeAddress[] nodes;
+        public List<int>[] segmentsToOwners;
+        private SegmentBasedTopologyInfo()
+        {
+        }
+
+        public static SegmentBasedTopologyInfo fromBytes(List<Byte> bytes, ref ulong pos)
+        {
+            SegmentBasedTopologyInfo resp = new SegmentBasedTopologyInfo();
+            ulong numNodes;
+            resp.topologyId = HotRodUtils.bytesToVLong(bytes, ref pos);
+            numNodes = HotRodUtils.bytesToVLong(bytes, ref pos);
+            resp.nodes = new NodeAddress[numNodes];
+            for (uint i = 0; i < numNodes; i++)
+            {
+                ulong addressLength = HotRodUtils.bytesToVLong(bytes, ref pos);
+                string address = Encoding.UTF8.GetString(bytes.GetRange((int)pos, (int)addressLength).ToArray());
+                pos += addressLength;
+                ushort port = HotRodUtils.bytesToUShort(bytes, ref pos);
+                resp.nodes[i]= new NodeAddress(address, port);
+            }
+            resp.hashFuncVersion = bytes[(int)pos++];
+            resp.numSegments = HotRodUtils.bytesToVLong(bytes, ref pos);
+            resp.segmentsToOwners = new List<int>[resp.numSegments];
+            for (uint i=0; i< resp.numSegments; i++)
+            {
+                resp.segmentsToOwners[i] = new List<int>();
+                int numOwner = bytes[(int)pos++];
+                for (uint j=0; j< numOwner; j++)
+                {
+                    ulong idx = HotRodUtils.bytesToVLong(bytes, ref pos);
+                    resp.segmentsToOwners[i].Add((int)idx);
+                }
+            }
+            return resp;
+        }
+    }
+
+    /// <summary>
     /// Representation of a Hotrod server response reqHeader, the first part of a Hotrod response.
     /// </summary>
     /// <remarks>Use this class as follows:
@@ -118,7 +185,7 @@ namespace GlassRod
         public byte opcode;
         public byte status;
         public byte topologyChangeMarker;
-        public HashAwareTopologyInfo topologyInfo;
+        public SegmentBasedTopologyInfo topologyInfo;
         private HeaderResponse()
         {
         }
