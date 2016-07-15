@@ -331,7 +331,7 @@ namespace GlassRod
 
             return h1;
         }
-        public int MurmurHash3_x64_64(int key)
+        public long MurmurHash3_x64_64(int key)
         {
             // Obtained by inlining MurmurHash3_x64_32(byte[], 9001) and removing all the unused code
             // (since we know the input is always 4 bytes and we only need 4 bytes of output)
@@ -386,7 +386,7 @@ namespace GlassRod
             h1 += h2;
             h2 += h1;
 
-            return (int)((ulong)h1 >> 32);
+            return h1;
         }
     }
 

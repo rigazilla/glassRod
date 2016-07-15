@@ -136,6 +136,7 @@ namespace GlassRod
         public ulong hashSpaceSize;
         public NodeAddress[] nodes;
         public List<int>[] segmentsToOwners;
+        public ulong segmentSize;
         private SegmentBasedTopologyInfo()
         {
         }
@@ -157,6 +158,7 @@ namespace GlassRod
             }
             resp.hashFuncVersion = bytes[(int)pos++];
             resp.numSegments = HotRodUtils.bytesToVLong(bytes, ref pos);
+            resp.segmentSize = (ulong)0x7FFFFFFF / resp.numSegments;
             resp.segmentsToOwners = new List<int>[resp.numSegments];
             for (uint i=0; i< resp.numSegments; i++)
             {
@@ -169,6 +171,11 @@ namespace GlassRod
                 }
             }
             return resp;
+        }
+
+        public ulong hashToSegmentId(long hash, ulong numSegments)
+        {
+            return ((ulong)hash & 0x7FFFFFFF) / this.segmentSize;
         }
     }
 

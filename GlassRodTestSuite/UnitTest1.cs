@@ -186,11 +186,10 @@ namespace GlassRodTestSuite
             MurMurHash3 mm3 = new MurMurHash3();
             for (int i = 0; i < integers.Count; i++)
             {
-                int res = mm3.MurmurHash3_x64_64((int)integers[i]);
+                int res = (int)((ulong)mm3.MurmurHash3_x64_64((int)integers[i])>>32);
                 int comp = (int)intMurmur3Hashes[i];
                 Assert.AreEqual(res, comp);
             }
         }
     }
 }
-   

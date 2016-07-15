@@ -39,12 +39,12 @@ namespace GlassRod
             return ret;
         }
 
-        internal static ushort bytesToUShort(List<byte> bytes, ref ulong pos)
+        public static ushort bytesToUShort(List<byte> bytes, ref ulong pos)
         {
             return (ushort)((int)bytes[(int)pos++] << 8 + bytes[(int)pos++]);
         }
 
-        internal static ulong bytesToULong(List<byte> bytes, ref ulong pos)
+        public static ulong bytesToULong(List<byte> bytes, ref ulong pos)
         {
             ulong ret = 0;
             for (int i=0; i<4; i++)
